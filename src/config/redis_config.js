@@ -1,23 +1,29 @@
-const redis = require("redis");
+const { createClient } = require("redis");
 const logger = require("../logger/logger");
 
 const REDIS_URL = process.env.REDIS_URL;
 
-const redisClient = redis.createClient({
+if (!REDIS_URL) throw new Error("REDIS_URL no definido");
+
+const redisClient = createClient({
   url: REDIS_URL,
+  socket: {
+    tls: true,
+    rejectUnauthorized: false,
+  },
 });
 
-redisClient.on("error", (err) => {
-  logger.error("Redis Client Error", { error: err.message });
-});
+redisClient.on("error", (err) => logger.error("Redis Client Error:", err));
+redisClient.on("connect", () => logger.info("Connected to Redis (AWS ElastiCache)"));
+redisClient.on("ready", () => logger.info("Redis client ready"));
 
-redisClient.on("connect", () => {
-  logger.info("Connected to Redis");
-});
-
-redisClient.on("error", (err) => {
-  console.error("Redis connection error:", err);
-  process.exit(1);
-});
+(async () => {
+  try {
+    await redisClient.connect();
+  } catch (err) {
+    logger.error("Redis connection failed:", err);
+    process.exit(1);
+  }
+})();
 
 module.exports = redisClient;
