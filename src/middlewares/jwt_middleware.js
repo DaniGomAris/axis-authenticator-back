@@ -15,6 +15,10 @@ function authenticateRequest(req, res, next) {
     return handleError(res, "INVALID_CREDENTIALS", STATUS.ERROR.UNAUTHORIZED);
   }
 
+  if (decoded?.expired) {
+    return handleError(res, "TOKEN_EXPIRED", STATUS.ERROR.UNAUTHORIZED);
+  }
+
   req.user = decoded;
   next();
 }
