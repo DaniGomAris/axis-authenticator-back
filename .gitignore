@@ -56,3 +56,6 @@ Thumbs.db
 # Postman collections/environment exports
 *.postman_collection.json
 *.postman_environment.json
+
+# Moduels
+node_modules
