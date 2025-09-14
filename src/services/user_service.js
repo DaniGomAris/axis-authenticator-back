@@ -5,7 +5,7 @@ const STATUS = require("../constants/status_constants");
 const { validateLogin } = require("../validators/user_validator");
 const { handleError } = require("../handlers/error_handler");
 const { handleValidation } = require("../handlers/validate_handler");
-const { generateToken, generateRefreshToken, storeRefreshToken } = require("../auth/jwt_auth");
+const { generateToken } = require("../auth/jwt_auth");
 
 async function loginUser(email, password, res) {
   try {
@@ -32,13 +32,8 @@ async function loginUser(email, password, res) {
     // Quitar contraseña del objeto de usuario
     const { password: _, ...userWithoutPassword } = user.toObject();
 
-    // Generar tokens
-    const token = generateToken(user._id, user.role, user.company_id);
-    const refreshToken = generateRefreshToken(user._id, user.role, user.company_id);
-
-    // TTL coherente con JWT_REFRESH_EXPIRES
-    const ttlSeconds = parseInt(process.env.JWT_REFRESH_EXPIRES) / 1000;
-    await storeRefreshToken(refreshToken, user._id, ttlSeconds);
+    // Generar JWT
+    const token = generateToken(user._id, user.role);
 
     // Respuesta exitosa
     return res.status(STATUS.SUCCESS.OK).json({
@@ -47,11 +42,10 @@ async function loginUser(email, password, res) {
       message: handleValidation("LOGIN_SUCCESS"),
       user: userWithoutPassword,
       token,
-      refreshToken,
     });
 
   } catch (err) {
-    // Errores de validación
+    // Errores de validacion
     if (err.message.includes("Email")) {
       return handleError(res, "INVALID_EMAIL", STATUS.ERROR.BAD_REQUEST);
     }

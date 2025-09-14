@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/mongo_config");
-const redisClient = require("./config/redis_config"); // ya conectado
+const redisClient = require("./config/redis_config");
 const logger = require("./logger/logger");
 const requestLogger = require("./middlewares/logger_middleware");
 
