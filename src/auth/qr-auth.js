@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
-const redisClient = require("../config/redis_config");
+const redisClient = require("../config/redis-config");
 
 const QR_TEMPORARY_EXPIRES = parseInt(process.env.QR_TEMPORARY_EXPIRES);
 const QR_ID_LENGTH = parseInt(process.env.QR_ID_LENGTH);

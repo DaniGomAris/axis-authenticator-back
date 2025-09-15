@@ -1,8 +1,8 @@
 const qrcode = require("qrcode");
-const { generateTemporaryQrId, validateTemporaryQrId } = require("../auth/qr_auth");
-const { handleError } = require("../handlers/error_handler");
-const STATUS = require("../constants/status_constants");
-const logger = require("../logger/logger");
+const { generateTemporaryQrId, validateTemporaryQrId } = require("../../auth/qr-auth");
+const { handleError } = require("../../handlers/error-handler");
+const STATUS = require("../../constants/status-constants");
+const logger = require("../../logger/logger");
 
 async function generateQr(user_id, company_id, res) {
   try {
@@ -37,8 +37,8 @@ async function validateQr(lGUID, res) {
       user_id: record.user_id,
       company_id: record.company_id,
     });
-  } catch (error) {
-    return handleError(res, "QR_VALIDATION_FAILED", STATUS.ERROR.INTERNAL, error);
+  } catch (err) {
+    return handleError(res, "QR_VALIDATION_FAILED", STATUS.ERROR.INTERNAL, err);
   }
 }
 

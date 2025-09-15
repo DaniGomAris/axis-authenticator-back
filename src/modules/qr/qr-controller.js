@@ -1,4 +1,4 @@
-const { generateQr, validateQr } = require("../services/qr_service");
+const { generateQr, validateQr } = require("./qr-service");
 
 async function generateQrController(req, res) {
   const user_id = req.user.sub;

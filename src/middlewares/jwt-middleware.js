@@ -1,6 +1,6 @@
-const { verifyToken } = require("../auth/jwt_auth");
-const { handleError } = require("../handlers/error_handler");
-const STATUS = require("../constants/status_constants");
+const { verifyToken } = require("../auth/jwt-auth");
+const { handleError } = require("../handlers/error-handler");
+const STATUS = require("../constants/messages-constants");
 
 function authenticateRequest(req, res, next) {
   const authHeader = req.headers["authorization"];

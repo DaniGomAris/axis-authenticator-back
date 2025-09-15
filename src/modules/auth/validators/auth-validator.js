@@ -1,4 +1,4 @@
-const MESSAGES = require("../constants/messages_constants");
+const MESSAGES = require("../../../constants/messages-constants");
 
 function validateLogin(email, password) {
   if (!email || !password) {

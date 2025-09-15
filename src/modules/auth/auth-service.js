@@ -1,11 +1,11 @@
-const User = require("../models/user_model");
+const User = require("./models/user-model");
 const argon2 = require("argon2");
-const STATUS = require("../constants/status_constants");
+const STATUS = require("../../constants/status-constants");
 
-const { validateLogin } = require("../validators/user_validator");
-const { handleError } = require("../handlers/error_handler");
-const { handleValidation } = require("../handlers/validate_handler");
-const { generateToken } = require("../auth/jwt_auth");
+const { validateLogin } = require("./validators/auth-validator");
+const { handleError } = require("../../handlers/error-handler");
+const { handleValidation } = require("../../handlers/validate-handler");
+const { generateToken } = require("../../auth/jwt-auth");
 
 async function loginUser(email, password, res) {
   try {
@@ -26,7 +26,7 @@ async function loginUser(email, password, res) {
 
     // Validar roles permitidos
     if (!["user", "admin"].includes(user.role)) {
-      return handleError(res, "INAUTHORIZED", STATUS.ERROR.FORBIDDEN);
+      return handleError(res, "UNAUTHORIZED", STATUS.ERROR.FORBIDDEN);
     }
 
     // Quitar contraseña del objeto de usuario
