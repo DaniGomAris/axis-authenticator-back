@@ -1,8 +1,10 @@
-const { loginUser } = require("./auth-service");
+const { loginUser, logoutUser } = require("./auth-service");
 const { handleError } = require("../../handlers/error-handler");
 const { handleValidation } = require("../../handlers/validate-handler");
+const { verifyToken, invalidateToken } = require("../../auth/jwt-auth");
 const STATUS = require("../../constants/status-constants");
 
+// Iniciar sesion
 async function loginUserController(req, res) {
   const { email, password } = req.body;
 
@@ -32,4 +34,29 @@ async function loginUserController(req, res) {
   }
 }
 
-module.exports = { loginUserController };
+// Logout
+async function logoutUserController(req, res) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
+    return handleError(res, "UNAUTHORIZED", STATUS.ERROR.UNAUTHORIZED);
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  // Decodificar el token para usat el user_id
+  const decoded = await verifyToken(token);
+  if (!decoded) return handleError(res, "INVALID_TOKEN", STATUS.ERROR.UNAUTHORIZED);
+
+  try {
+    await invalidateToken(decoded.user_id);
+    return res.status(STATUS.SUCCESS.OK).json({
+      success: true,
+      status: STATUS.SUCCESS.OK,
+      message: "Logout successful",
+    });
+  } catch (err) {
+    return handleError(res, "INTERNAL", STATUS.ERROR.INTERNAL, err);
+  }
+}
+
+module.exports = { loginUserController, logoutUserController};
