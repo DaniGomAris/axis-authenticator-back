@@ -1,44 +1,38 @@
 const qrcode = require("qrcode");
 const { generateTemporaryQrId, validateTemporaryQrId } = require("../../auth/qr-auth");
-const { handleError } = require("../../handlers/error-handler");
-const STATUS = require("../../constants/status-constants");
 const logger = require("../../logger/logger");
+const qrConfig = require("../../config/qr-config");
 
-async function generateQr(user_id, company_id, res) {
+// Generar QR
+async function generateQr(user_id, company_id = null) {
   try {
     const lGUID = await generateTemporaryQrId(user_id, company_id);
-    const qrImage = await qrcode.toDataURL(lGUID);
+    const qrImage = await qrcode.toDataURL(lGUID, qrConfig);
 
-    logger.info(`QR generado para id: ${user_id}, company_id=${company_id}`);
+    logger.info(`QR generado para user_id=${user_id}, company_id=${company_id}`);
 
-    return res.status(STATUS.SUCCESS.OK).json({
-      success: true,
-      lGUID,
-      qr: qrImage,
-    });
+    return { lGUID, qrImage };
   } catch (error) {
-    return handleError(res, "QR_GENERATION_FAILED", STATUS.ERROR.INTERNAL, error);
+    logger.error(`Error generando QR para user_id=${user_id}`, { error });
+    throw new Error("QR_GENERATION_FAILED");
   }
 }
 
-async function validateQr(lGUID, res) {
+// Validar QR
+async function validateQr(lGUID) {
   try {
     const record = await validateTemporaryQrId(lGUID);
 
     if (!record) {
-      logger.warn(`Validacion con QR inexistente: ${lGUID}`);
-      return handleError(res, "QR_NOT_FOUND", STATUS.ERROR.NOT_FOUND);
+      logger.warn(`Validación fallida, QR inexistente: ${lGUID}`);
+      throw new Error("QR_NOT_FOUND");
     }
 
-    logger.info(`QR validado correctamente para id: ${record.user_id}, company_id:${record.company_id}`);
-
-    return res.status(STATUS.SUCCESS.OK).json({
-      success: true,
-      user_id: record.user_id,
-      company_id: record.company_id,
-    });
-  } catch (err) {
-    return handleError(res, "QR_VALIDATION_FAILED", STATUS.ERROR.INTERNAL, err);
+    logger.info(`QR validado correctamente: user_id=${record.user_id}, company_id=${record.company_id}`);
+    return record;
+  } catch (error) {
+    logger.error(`Error validando QR: ${lGUID}`, { error });
+    throw new Error(error.message || "QR_VALIDATION_FAILED");
   }
 }
 

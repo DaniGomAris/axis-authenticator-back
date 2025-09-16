@@ -10,7 +10,7 @@ async function generateTemporaryQrId(user_id, company_id) {
   const value = JSON.stringify({ user_id, company_id });
   
   // TTL
-  await redisClient.setEx(lGUID, Math.floor(QR_TEMPORARY_EXPIRES / 1000), value);
+  await redisClient.setEx(lGUID, Math.floor(QR_TEMPORARY_EXPIRES), value);
 
   return lGUID;
 }

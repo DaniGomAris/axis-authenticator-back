@@ -16,7 +16,7 @@ function handleError(res, type, status = STATUS.ERROR.BAD_REQUEST, extra = null)
 
     // Errores personalizados
     case "QR_GENERATION_FAILED": message = "Failed to generate QR"; break;
-    case "QR_NOT_FOUND": message = "QR not found"; break;
+    case "QR_NOT_FOUND": message = "QR not found or expired"; break;
     case "QR_VALIDATION_FAILED": message = "Failed to validate QR"; break;
 
     default: 

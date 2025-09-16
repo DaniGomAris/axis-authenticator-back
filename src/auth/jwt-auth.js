@@ -8,12 +8,12 @@ const JWT_TEMPORAL_EXPIRES = process.env.JWT_TEMPORAL_ACCESS_EXPIRES;
 // Genera un JWT principal con user_id y role
 function generateToken(user_id, role) {
   return jwt.sign(
-    { role },
+    { user_id, role },
     JWT_SECRET,
-    { subject: 
-      user_id, 
+    {
       expiresIn: JWT_EXPIRES, 
-      algorithm: "HS256",}
+      algorithm: "HS256",
+    }
   );
 }
 
@@ -23,9 +23,8 @@ function verifyToken(token) {
     const decoded = jwt.verify(token, JWT_SECRET);
 
     return {
-      user_id: decoded.sub,
+      user_id: decoded.user_id,
       role: decoded.role,
-      company_id: decoded.company_id || null,
       exp: decoded.exp
     };
   } catch (err) {

@@ -2,7 +2,7 @@ const { verifyToken } = require("../auth/jwt-auth");
 const { handleError } = require("../handlers/error-handler");
 const STATUS = require("../constants/messages-constants");
 
-function authenticateRequest(req, res, next) {
+function validToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
     return handleError(res, "INAUTHORIZED", STATUS.ERROR.UNAUTHORIZED);
@@ -19,8 +19,11 @@ function authenticateRequest(req, res, next) {
     return handleError(res, "TOKEN_EXPIRED", STATUS.ERROR.UNAUTHORIZED);
   }
 
-  req.user = decoded;
+  req.user = {
+    user_id: decoded.user_id,
+    role: decoded.role
+  };
   next();
 }
 
-module.exports = { authenticateRequest };
+module.exports = { validToken };
