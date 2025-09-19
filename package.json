@@ -27,7 +27,6 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
-    "qrcode": "^1.5.4",
     "redis": "^5.8.2",
     "uuid": "^13.0.0",
     "winston": "^3.17.0"

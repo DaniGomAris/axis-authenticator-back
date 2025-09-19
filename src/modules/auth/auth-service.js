@@ -1,37 +1,46 @@
-const User = require("./models/user-model");
-const argon2 = require("argon2");
+const User = require("../auth/models/user-model");
+const { validateLogin, validatePassword, validateRole } = require("./validators/auth-validator");
+const { verifyToken, invalidateToken, generateToken } = require("../../auth/jwt-auth");
+const logger = require("../../utils/logger");
 
-const { validateLogin } = require("./validators/auth-validator");
-const { generateToken, invalidateToken } = require("../../auth/jwt-auth");
-
+// Login user
 async function loginUser(email, password) {
   validateLogin(email, password);
 
   const user = await User.findOne({ email });
-  if (!user) throw new Error("USER_NOT_FOUND");
+  if (!user) {
+    logger.error(`User not found with email: ${email}`);
+    throw new Error("USER NOT FOUND");
+  }
 
-  const isPasswordValid = await argon2.verify(user.password, password);
-  if (!isPasswordValid) throw new Error("INVALID_CREDENTIALS");
+  await validatePassword(user.password, password);
 
-  // Roles permitidos
-  if (!["user", "admin"].includes(user.role)) throw new Error("UNAUTHORIZED");
+  validateRole(user.role, ["admin", "user"]);
 
   const { password: _, ...userWithoutPassword } = user.toObject();
 
-  // Generar JWT
   const token = await generateToken(user._id, user.role);
 
+  logger.info(`Login successful for user ${user._id}`);
   return { user: userWithoutPassword, token };
 }
 
-async function logoutUser(token) {
-  if (!token) throw new Error("TOKEN_REQUIRED");
 
-  // Verificar token para obtener user_id
+// Logout user
+async function logoutUser(token) {
+  if (!token) {
+    logger.error("Logout failed: token required");
+    throw new Error("TOKEN REQUIRED");
+  }
+
   const decoded = await verifyToken(token);
-  if (!decoded) throw new Error("INVALID_TOKEN");
+  if (!decoded) {
+    logger.error("Logout failed: invalid token");
+    throw new Error("INVALID TOKEN");
+  }
 
   await invalidateToken(decoded.user_id);
+  logger.info(`Logout successful for user ${decoded.user_id}`);
   return true;
 }
 

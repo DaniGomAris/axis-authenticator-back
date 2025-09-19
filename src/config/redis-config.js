@@ -1,5 +1,5 @@
 const { createClient } = require("redis");
-const logger = require("../logger/logger");
+const logger = require("../utils/logger");
 
 const REDIS_URL = process.env.REDIS_URL;
 

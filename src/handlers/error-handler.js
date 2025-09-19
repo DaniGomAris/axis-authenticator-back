@@ -1,34 +1,31 @@
-const MESSAGES = require("../constants/messages-constants");
-const STATUS = require("../constants/status-constants");
-const logger = require("../logger/logger");
+module.exports = { handleError };
 
-function handleError(res, type, status = STATUS.ERROR.BAD_REQUEST, extra = null) {
-  let message = MESSAGES.ERROR.INTERNAL;
+function handleError(res, err) {
+  const ERROR_MAP = {
+    // Auth errors
+    "MISSING CREDENTIALS": { msg: "Missing credentials", status: 400 },
+    "WRONG EMAIL": { msg: "Wrong email", status: 400 },
+    "WRONG PASSWORD": { msg: "Wrong password", status: 401 },
 
-  switch (type) {
-    // Errores
-    case "REQUIRED_FIELDS": message = MESSAGES.ERROR.REQUIRED_FIELDS; break;
-    case "INVALID_EMAIL": message = MESSAGES.ERROR.INVALID_EMAIL; break;
-    case "INVALID_PASSWORD": message = MESSAGES.ERROR.INVALID_PASSWORD; break;
-    case "USER_NOT_FOUND": message = MESSAGES.ERROR.USER_NOT_FOUND; break;
-    case "INVALID_CREDENTIALS": message = MESSAGES.ERROR.INVALID_CREDENTIALS; break;
-    case "UNAUTHORIZED": message = MESSAGES.ERROR.UNAUTHORIZED; break;
+    // Token
+    "UNAUTHORIZED": { msg: "Unauthorized", status: 403 },
+    "INVALID TOKEN": { msg: "Invalid or expired token", status: 401 },
+    "TOKEN REQUIRED": { msg: "Token required", status: 401 },
 
-    // Errores personalizados
-    case "QR_GENERATION_FAILED": message = "Failed to generate QR"; break;
-    case "QR_NOT_FOUND": message = "QR not found or expired"; break;
-    case "QR_VALIDATION_FAILED": message = "Failed to validate QR"; break;
+    // Permission errors
+    "ACCESS DENIED": { msg: "Access denied", status: 403 },
 
-    default: 
-      message = MESSAGES.ERROR.INTERNAL;
-  }
+    // Not found
+    "USER NOT FOUND": { msg: "User not found", status: 404 },
 
-  // Log interno
-  logger.error(`Error type: ${type}, status: ${status}`, { details: extra });
+    // QR
+    "QR GENERATION FAILED": { msg: "Failed to generate QR", status: 404 },
+    "QR NOT FOUND": { msg: "QR not found or expired", status: 404 },
+    "QR VALIDATION FAILED": { msg: "Failed to validate QR", status: 404 },
+  };
 
-  const statusCode = typeof status === "number" ? status : STATUS.ERROR.INTERNAL;
-
-  return res.status(statusCode).json({ success: false, status: statusCode, message });
+  const { msg, status } = ERROR_MAP[err.message?.toUpperCase?.()] || { msg: "Internal server error", status: 500 };
+  return res.status(status).json({ message: msg });
 }
 
 module.exports = { handleError };

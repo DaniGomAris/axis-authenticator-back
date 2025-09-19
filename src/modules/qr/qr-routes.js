@@ -5,10 +5,10 @@ const { generateQrController, validateQrController } = require("./qr-controller"
 
 const router = express.Router();
 
-// POST /users/generate-qr
-router.post("/generate-qr", validToken, authorizedRoles("admin","user"), generateQrController);
+// POST /qr/generate-qr
+router.post("/generate-qr", validToken, authorizedRoles(["admin","user"]), generateQrController);
 
-// POST /users/validate-qr
+// POST /qr/validate-qr
 router.post("/validate-qr", validToken, validateQrController);
 
 module.exports = router;

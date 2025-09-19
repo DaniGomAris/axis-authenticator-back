@@ -1,10 +1,13 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+
 const connectDB = require("./config/mongo-config");
 const redisClient = require("./config/redis-config");
-const logger = require("./logger/logger");
+
+const logger = require("./utils/logger");
 const requestLogger = require("./middlewares/logger-middleware");
+const {handleError} = require("./handlers/error-handler")
 
 const authRoutes = require("./modules/auth/auth-routes");
 const qrRoutes = require("./modules/qr/qr-routes");
@@ -16,16 +19,21 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(requestLogger);
 
-// Conexión a MongoDB
+// MOngo DB connection
 connectDB();
 
-// Rutas
+// Routes
 app.use("/auth", authRoutes);
 app.use("/qr", qrRoutes);
 
+// Global middleware
+app.use((err, req, res, next) => {
+  handleError(res, err);
+});
+
 // Endpoint de prueba
 app.get("/", (req, res) => {
-  res.json({ message: "Node.js API conectada a MongoDB y Redis" });
+  res.json({ message: "Node.js API connected to MongoDB & Redis" });
   logger.http("GET / llamado");
 });
 

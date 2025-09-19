@@ -1,20 +1,22 @@
-function authorizedRoles(...allowedRoles) {
+const { handleError } = require("../handlers/error-handler");
+
+function authorizedRoles(roles = []) {
   return (req, res, next) => {
-    if (!req.user || !req.user.role) {
-      return res.status(403).json({ 
-        success: false, 
-        message: "Usuario no autenticado o sin rol definido" 
-      });
-    }
+    try {
+      if (!req.user) {
+        const err = new Error("UNAUTHORIZED");
+        return handleError(res, err);
+      }
 
-    if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ 
-        success: false, 
-        message: "No autorizado para esta ruta" 
-      });
-    }
+      if (!roles.includes(req.user.role)) {
+        const err = new Error("ACCESS DENIED");
+        return handleError(res, err);
+      }
 
-    next();
+      next();
+    } catch (err) {
+      handleError(res, err)
+    }
   };
 }
 

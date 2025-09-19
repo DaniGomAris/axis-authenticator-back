@@ -1,62 +1,50 @@
 const { loginUser, logoutUser } = require("./auth-service");
 const { handleError } = require("../../handlers/error-handler");
-const { handleValidation } = require("../../handlers/validate-handler");
-const { verifyToken, invalidateToken } = require("../../auth/jwt-auth");
-const STATUS = require("../../constants/status-constants");
+const logger = require("../../utils/logger");
 
-// Iniciar sesion
+// Controller to login a user
 async function loginUserController(req, res) {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
     const { user, token } = await loginUser(email, password);
 
-    return res.status(STATUS.SUCCESS.OK).json({
+    res.status(200).json({
       success: true,
-      status: STATUS.SUCCESS.OK,
-      message: handleValidation("LOGIN_SUCCESS"),
+      status: "ok",
+      message: "Login exitoso",
       user,
-      token,
+      token
     });
+    logger.info("Login exitoso");
   } catch (err) {
-    switch (err.message) {
-      case "USER_NOT_FOUND":
-        return handleError(res, "USER_NOT_FOUND", STATUS.ERROR.NOT_FOUND);
-      case "INVALID_CREDENTIALS":
-        return handleError(res, "INVALID_CREDENTIALS", STATUS.ERROR.UNAUTHORIZED);
-      case "UNAUTHORIZED":
-        return handleError(res, "UNAUTHORIZED", STATUS.ERROR.FORBIDDEN);
-      default:
-        if (err.message.includes("Email")) return handleError(res, "INVALID_EMAIL", STATUS.ERROR.BAD_REQUEST);
-        if (err.message.includes("Password")) return handleError(res, "INVALID_PASSWORD", STATUS.ERROR.BAD_REQUEST);
-        return handleError(res, "INTERNAL", STATUS.ERROR.INTERNAL, err);
-    }
+    handleError(res, err);
   }
 }
 
-// Logout
+// Controller to logout a user
 async function logoutUserController(req, res) {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader) {
-    return handleError(res, "UNAUTHORIZED", STATUS.ERROR.UNAUTHORIZED);
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  // Decodificar el token para usat el user_id
-  const decoded = await verifyToken(token);
-  if (!decoded) return handleError(res, "INVALID_TOKEN", STATUS.ERROR.UNAUTHORIZED);
-
   try {
-    await invalidateToken(decoded.user_id);
-    return res.status(STATUS.SUCCESS.OK).json({
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+      throw new Error("UNAUTHORIZED");
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      throw new Error("TOKEN REQUIRED");
+    }
+
+    await logoutUser(token);
+
+    res.status(200).json({
       success: true,
-      status: STATUS.SUCCESS.OK,
-      message: "Logout successful",
+      status: "ok",
+      message: "Logout exitoso"
     });
+    logger.info("Logout exitoso");
   } catch (err) {
-    return handleError(res, "INTERNAL", STATUS.ERROR.INTERNAL, err);
+    handleError(res, err);
   }
 }
 
-module.exports = { loginUserController, logoutUserController};
+module.exports = { loginUserController, logoutUserController };

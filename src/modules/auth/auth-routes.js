@@ -4,10 +4,12 @@ const { validToken } = require("../../middlewares/jwt-middleware");
 
 const router = express.Router();
 
-// POST /users/login
+// Login user
+// POST /auth/login
 router.post("/login", loginUserController);
 
-// POST /users/logout
+// Logout user
+// POST /auth/logout
 router.post("/logout", validToken, logoutUserController);
 
 module.exports = router;
