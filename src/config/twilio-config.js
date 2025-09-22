@@ -1,4 +1,4 @@
-import twilio from "twilio";
+const twilio = require("twilio");
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken  = process.env.TWILIO_AUTH_TOKEN;
@@ -10,4 +10,4 @@ if (!accountSid || !authToken || !fromNumber) {
 
 const twilioClient = twilio(accountSid, authToken);
 
-export { twilioClient, fromNumber };
+module.exports = { twilioClient, fromNumber };

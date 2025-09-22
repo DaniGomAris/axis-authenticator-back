@@ -1,6 +1,6 @@
-import TwilioService from "./twilio-service.js";
-import { handleError } from "@handlers/error-handler";
-import logger from "@utils/logger";
+const TwilioService = require("./twilio-service");
+const { handleError } = require("@handlers/error-handler");
+const logger = require("@utils/logger");
 
 class TwilioController {
   static async sendOtp(req, res) {
@@ -26,4 +26,4 @@ class TwilioController {
   }
 }
 
-export default TwilioController;
+module.exports = TwilioController;

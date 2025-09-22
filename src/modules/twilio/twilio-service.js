@@ -1,6 +1,6 @@
-import { redisClient } from "../../config/redis-config.js";
-import { twilioClient, fromNumber } from "../../config/twilio-config.js";
-import logger from "@utils/logger";
+const { redisClient } = require("../../config/redis-config");
+const { twilioClient, fromNumber } = require("../../config/twilio-config");
+const logger = require("@utils/logger");
 
 const TWILIO_OTP_EXPIRES = process.env.TWILIO_EXPIRES;
 const TWILIO_VERIFIED_EXPIRES = process.env.TWILIO_EXPIRES;
@@ -54,4 +54,4 @@ class TwilioService {
   }
 }
 
-export default TwilioService;
+module.exports = TwilioService;
