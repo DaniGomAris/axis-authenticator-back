@@ -6,7 +6,9 @@ const TWILIO_OTP_EXPIRES = process.env.TWILIO_EXPIRES;
 const TWILIO_VERIFIED_EXPIRES = process.env.TWILIO_EXPIRES;
 
 class TwilioService {
-  static async sendOtp(phone) {
+
+  // Send OTP
+  static async sendOtpService(phone) {
     try {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -28,7 +30,8 @@ class TwilioService {
     }
   }
 
-  static async verifyOtp(phone, otp) {
+  // Verify OTP
+  static async verifyOtpService(phone, otp) {
     if (!otp) {
       logger.warn(`Verification failed: OTP required for ${phone}`);
       throw new Error("OTP REQUIRED");

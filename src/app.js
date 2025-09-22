@@ -4,9 +4,9 @@ const cors = require("cors");
 
 const connectDB = require("@config/mongo-config");
 const redisClient = require("@config/redis-config");
+const twilioClient = require("@config/twilio-config");
 
 const logger = require("@utils/logger");
-const requestLogger = require("@middlewares/logger-middleware");
 const { handleError } = require("@handlers/error-handler");
 
 const authRoutes = require("@modules/auth/auth-routes");
@@ -18,7 +18,6 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({ origin: "*" }));
-app.use(requestLogger);
 
 // MOngo DB connection
 connectDB();
