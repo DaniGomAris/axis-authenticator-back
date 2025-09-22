@@ -11,6 +11,7 @@ const { handleError } = require("@handlers/error-handler");
 
 const authRoutes = require("@modules/auth/auth-routes");
 const qrRoutes = require("@modules/qr/qr-routes");
+const twilioRoutes = require("@modules/twilio/twilio-routes.js");
 
 const app = express();
 
@@ -25,6 +26,7 @@ connectDB();
 // Routes
 app.use("/auth", authRoutes);
 app.use("/qr", qrRoutes);
+app.use("/twilio", twilioRoutes);
 
 // Global middleware
 app.use((err, req, res, next) => {

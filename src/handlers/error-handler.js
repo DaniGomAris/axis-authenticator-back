@@ -22,9 +22,20 @@ function handleError(res, err) {
     "QR GENERATION FAILED": { msg: "Failed to generate QR", status: 404 },
     "QR NOT FOUND": { msg: "QR not found or expired", status: 404 },
     "QR VALIDATION FAILED": { msg: "Failed to validate QR", status: 404 },
+
+    // Twilio
+    "OTP SEND FAILED": { msg: "Failed to send OTP", status: 500 },
+    "OTP REQUIRED": { msg: "OTP required", status: 400 },
+    "OTP EXPIRED": { msg: "OTP expired or invalid", status: 400 },
+    "OTP INCORRECT": { msg: "OTP incorrect", status: 400 },
   };
 
-  const { msg, status } = ERROR_MAP[err.message?.toUpperCase?.()] || { msg: "Internal server error", status: 500 };
+  const { msg, status } = 
+  ERROR_MAP[err.message?.toUpperCase?.()] || { 
+    msg: "Internal server error", 
+    status: 500 
+  };
+  
   return res.status(status).json({ message: msg });
 }
 
