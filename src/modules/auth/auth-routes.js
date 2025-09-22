@@ -6,7 +6,6 @@ const router = express.Router();
 
 // Login user
 // POST /auth/login
-const AuthController = require("@modules/auth/auth-controller");
 router.post("/login", AuthController.loginUserController);
 
 // Logout user
