@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const logger = require("../utils/logger");
+const logger = require("@utils/logger");
 
 const connectDB = async () => {
   try {
@@ -8,7 +8,7 @@ const connectDB = async () => {
     });
     logger.info("Connected to MondoDB");
   } catch (error) {
-    logger.error("Connection error to MongoDB:", err);
+    logger.error("Connection error to MongoDB:", error);
     process.exit(1);
   }
 };

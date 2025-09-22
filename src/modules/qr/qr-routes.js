@@ -1,7 +1,7 @@
 const express = require("express");
-const { validToken } = require("../../middlewares/jwt-middleware");
-const { authorizedRoles } = require("../../middlewares/role-middleware");
-const { generateQrController, validateQrController } = require("./qr-controller");
+const { validToken } = require("@middlewares/jwt-middleware");
+const { authorizedRoles } = require("@middlewares/role-middleware");
+const { generateQrController, validateQrController } = require("@modules/qr/qr-controller");
 
 const router = express.Router();
 

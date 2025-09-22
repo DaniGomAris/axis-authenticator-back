@@ -1,7 +1,7 @@
-const User = require("../auth/models/user-model");
-const { validateLogin, validatePassword, validateRole } = require("./validators/auth-validator");
-const { verifyToken, invalidateToken, generateToken } = require("../../auth/jwt-auth");
-const logger = require("../../utils/logger");
+const User = require("@modules/auth/models/user-model");
+const { validateLogin, validatePassword, validateRole } = require("@modules/auth/validators/auth-validator");
+const { verifyToken, invalidateToken, generateToken } = require("@modules/auth/strategies/jwt-strategy");
+const logger = require("@utils/logger");
 
 // Login user
 async function loginUser(email, password) {
@@ -44,4 +44,22 @@ async function logoutUser(token) {
   return true;
 }
 
-module.exports = { loginUser, logoutUser };
+
+// Verify a token is valid
+async function verifyUserToken(token) {
+  if (!token) {
+    logger.warn("Token verification failed: no token provided");
+    throw new Error("TOKEN REQUIRED");
+  }
+
+  const decoded = await verifyToken(token);
+  if (!decoded) {
+    logger.warn("Token verification failed: invalid token");
+    throw new Error("INVALID TOKEN");
+  }
+
+  logger.info(`Token verified successfully for user:${decoded.user_id}`);
+  return { user_id: decoded.user_id, role: decoded.role };
+}
+
+module.exports = { loginUser, logoutUser, verifyUserToken };

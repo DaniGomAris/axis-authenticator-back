@@ -1,4 +1,4 @@
-const { handleError } = require("../handlers/error-handler");
+const { handleError } = require("@handlers/error-handler");
 
 function authorizedRoles(roles = []) {
   return (req, res, next) => {

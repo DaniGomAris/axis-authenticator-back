@@ -2,15 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-const connectDB = require("./config/mongo-config");
-const redisClient = require("./config/redis-config");
+const connectDB = require("@config/mongo-config");
+const redisClient = require("@config/redis-config");
 
-const logger = require("./utils/logger");
-const requestLogger = require("./middlewares/logger-middleware");
-const {handleError} = require("./handlers/error-handler")
+const logger = require("@utils/logger");
+const requestLogger = require("@middlewares/logger-middleware");
+const { handleError } = require("@handlers/error-handler");
 
-const authRoutes = require("./modules/auth/auth-routes");
-const qrRoutes = require("./modules/qr/qr-routes");
+const authRoutes = require("@modules/auth/auth-routes");
+const qrRoutes = require("@modules/qr/qr-routes");
 
 const app = express();
 

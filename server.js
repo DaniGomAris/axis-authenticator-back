@@ -1,7 +1,8 @@
-const app = require("./src/app");
-const logger = require("./src/utils/logger");
+require("module-alias/register");
+const app = require("@root/app");
+const logger = require("@utils/logger");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   logger.info(`Running on http://localhost:${PORT}`);

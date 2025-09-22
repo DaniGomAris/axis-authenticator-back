@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const redisClient = require("../config/redis-config");
+const redisClient = require("@config/redis-config");
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 const JWT_ACCESS_EXPIRES = parseInt(process.env.JWT_ACCESS_EXPIRES);

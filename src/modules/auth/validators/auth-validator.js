@@ -1,5 +1,5 @@
 const argon2 = require("argon2");
-const logger = require("../../../utils/logger");
+const logger = require("@utils/logger");
 
 // Validate email and password
 function validateLogin(email, password) {

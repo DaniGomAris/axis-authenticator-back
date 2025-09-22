@@ -1,11 +1,11 @@
-const { generateQr, validateQr } = require("./qr-service");
-const { handleError } = require("../../handlers/error-handler");
-const logger = require("../../utils/logger");
+const { generateQr, validateQr } = require("@modules/qr/qr-service");
+const { handleError } = require("@handlers/error-handler");
+const logger = require("@utils/logger");
 
-// Generar GUID
+// Generate GUID
 async function generateQrController(req, res) {
   try {
-    const user_id = req.user.user_id; // viene del middleware JWT
+    const user_id = req.user.user_id;
     const company_id = req.body?.company_id || null;
 
     const { lGUID } = await generateQr(user_id, company_id);
