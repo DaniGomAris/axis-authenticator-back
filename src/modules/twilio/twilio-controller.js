@@ -1,6 +1,6 @@
 const TwilioService = require("./twilio-service");
-const { handleError } = require("@handlers/error-handler");
 const logger = require("@utils/logger");
+const { handleError } = require("@handlers/error-handler");
 
 class TwilioController {
 

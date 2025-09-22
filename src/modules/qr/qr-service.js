@@ -1,11 +1,12 @@
-const { generateTemporaryQrId, validateTemporaryQrId } = require("@modules/qr/strategies/qr-strategy");
+const QrStrategy = require("@modules/qr/strategies/qr-strategy");
 const logger = require("@utils/logger");
 
 class QrService {
+
   // Generate QR
   static async generateQrService(user_id, company_id = null) {
     try {
-      const lGUID = await generateTemporaryQrId(user_id, company_id);
+      const lGUID = await QrStrategy.generateTemporaryQrId(user_id, company_id);
       logger.info(`GUID generated | user_id: ${user_id} | company_id: ${company_id}`);
       return { lGUID };
     } catch (error) {
@@ -17,7 +18,7 @@ class QrService {
   // Validate QR
   static async validateQrService(lGUID) {
     try {
-      const record = await validateTemporaryQrId(lGUID);
+      const record = await QrStrategy.validateTemporaryQrId(lGUID);
 
       if (!record) {
         logger.warn(`GUID not found or expired | lGUID: ${lGUID}`);

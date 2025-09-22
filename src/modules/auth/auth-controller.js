@@ -1,6 +1,6 @@
 const AuthService = require("@modules/auth/auth-service");
-const { handleError } = require("@handlers/error-handler");
 const logger = require("@utils/logger");
+const { handleError } = require("@handlers/error-handler");
 
 class AuthController {
 

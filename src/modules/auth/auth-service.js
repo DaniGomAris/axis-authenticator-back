@@ -1,7 +1,7 @@
 const User = require("@modules/auth/models/user-model");
-const { validateLogin, validatePassword, validateRole } = require("@modules/auth/validators/auth-validator");
-const { verifyToken, invalidateToken, generateToken } = require("@modules/auth/strategies/jwt-strategy");
+const JwtStrategy = require("@modules/auth/strategies/jwt-strategy");
 const logger = require("@utils/logger");
+const { validateLogin, validatePassword, validateRole } = require("@modules/auth/validators/auth-validator");
 
 class AuthService {
 
@@ -19,7 +19,7 @@ class AuthService {
     validateRole(user.role, ["admin", "user"]);
 
     const { password: _, ...userWithoutPassword } = user.toObject();
-    const token = await generateToken(user._id, user.role);
+    const token = await JwtStrategy.generateTokenStrategy(user._id, user.role);
 
     logger.info(`Login successful for user ${user._id}`);
     return { user: userWithoutPassword, token };
@@ -32,13 +32,13 @@ class AuthService {
       throw new Error("TOKEN REQUIRED");
     }
 
-    const decoded = await verifyToken(token);
+    const decoded = await JwtStrategy.verifyTokenStrategy(token);
     if (!decoded) {
       logger.error("Logout failed: invalid token");
       throw new Error("INVALID TOKEN");
     }
 
-    await invalidateToken(decoded.user_id);
+    await JwtStrategy.invalidateTokenStrategy(decoded.user_id);
     logger.info(`Logout successful for user ${decoded.user_id}`);
     return true;
   }
@@ -50,7 +50,7 @@ class AuthService {
       throw new Error("TOKEN REQUIRED");
     }
 
-    const decoded = await verifyToken(token);
+    const decoded = await JwtStrategy.verifyTokenStrategy(token);
     if (!decoded) {
       logger.warn("Token verification failed: invalid token");
       throw new Error("INVALID TOKEN");

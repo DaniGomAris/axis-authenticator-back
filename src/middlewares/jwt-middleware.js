@@ -1,6 +1,6 @@
-const { verifyToken, generateToken } = require("@modules/auth/strategies/jwt-strategy");
 const redisClient = require("@config/redis-config");
 const logger = require("@utils/logger");
+const { verifyToken, generateToken } = require("@modules/auth/strategies/jwt-strategy");
 
 const JWT_ONE_DAY_EXPIRES = parseInt(process.env.JWT_ONE_DAY_EXPIRES);
 

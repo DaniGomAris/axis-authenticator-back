@@ -1,6 +1,6 @@
 const QrService = require("@modules/qr/qr-service");
-const { handleError } = require("@handlers/error-handler");
 const logger = require("@utils/logger");
+const { handleError } = require("@handlers/error-handler");
 
 class QrController {
 

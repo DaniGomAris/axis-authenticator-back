@@ -1,7 +1,7 @@
 const express = require("express");
+const QrController = require("@modules/qr/qr-controller");
 const { validToken } = require("@middlewares/jwt-middleware");
 const { authorizedRoles } = require("@middlewares/role-middleware");
-const QrController = require("@modules/qr/qr-controller");
 
 const router = express.Router();
 
