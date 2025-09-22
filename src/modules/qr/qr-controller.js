@@ -25,10 +25,10 @@ class QrController {
   }
 
   // Verify GUID
-  static async validateQRController(req, res) {
+  static async validateQrController(req, res) {
     try {
       const { lGUID } = req.body;
-      const record = await QrService.validateQRService(lGUID);
+      const record = await QrService.validateQrService(lGUID);
 
       res.status(200).json({
         success: true,

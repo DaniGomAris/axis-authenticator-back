@@ -3,7 +3,7 @@ const logger = require("@utils/logger");
 
 class QrService {
   // Generate QR
-  static async generateQRService(user_id, company_id = null) {
+  static async generateQrService(user_id, company_id = null) {
     try {
       const lGUID = await generateTemporaryQrId(user_id, company_id);
       logger.info(`GUID generated | user_id: ${user_id} | company_id: ${company_id}`);
@@ -15,7 +15,7 @@ class QrService {
   }
 
   // Validate QR
-  static async validateQRService(lGUID) {
+  static async validateQrService(lGUID) {
     try {
       const record = await validateTemporaryQrId(lGUID);
 
