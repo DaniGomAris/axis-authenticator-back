@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 
 const connectDB = require("@config/mongo-config");
 const redisClient = require("@config/redis-config");
@@ -18,6 +19,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({ origin: "*" }));
+app.use(helmet());
 
 // MOngo DB connection
 connectDB();
@@ -32,7 +34,7 @@ app.use((err, req, res, next) => {
   handleError(res, err);
 });
 
-// Endpoint de prueba
+// Endpoint
 app.get("/", (req, res) => {
   res.json({ message: "Node.js API connected to MongoDB & Redis & twilio" });
   logger.http("GET / llamado");
