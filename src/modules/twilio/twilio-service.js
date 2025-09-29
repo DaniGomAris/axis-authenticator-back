@@ -2,8 +2,8 @@ const redisClient = require("../../config/redis-config");
 const logger = require("@utils/logger");
 const { twilioClient, fromNumber } = require("../../config/twilio-config");
 
-const TWILIO_OTP_EXPIRES = process.env.TWILIO_EXPIRES;
-const TWILIO_VERIFIED_EXPIRES = process.env.TWILIO_EXPIRES;
+const TWILIO_OTP_EXPIRES = parseInt(process.env.TWILIO_OTP_EXPIRES);
+const TWILIO_VERIFIED_EXPIRES = parseInt(process.env.TWILIO_VERIFIED_EXPIRES);
 
 class TwilioService {
 

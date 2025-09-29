@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+require("./company-model");  
 
 const userSchema = new mongoose.Schema({
   _id: String, 
@@ -11,7 +12,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String },
   clyper: { type: String },
   password: { type: String, required: true },
-  companies: [{ type: String, ref: "Company" }]
+  companies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }]
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema, "users");

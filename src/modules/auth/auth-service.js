@@ -9,7 +9,7 @@ class AuthService {
   static async loginUserService(email, password) {
     validateLogin(email, password);
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("companies", "-__v");
     if (!user) {
       logger.error(`User not found with email: ${email}`);
       throw new Error("USER NOT FOUND");
@@ -21,7 +21,6 @@ class AuthService {
     const { password: _, ...userWithoutPassword } = user.toObject();
     const token = await JwtStrategy.generateTokenStrategy(user._id, user.role);
 
-    logger.info(`Login successful for user ${user._id}`);
     return { user: userWithoutPassword, token };
   }
 
@@ -39,7 +38,7 @@ class AuthService {
     }
 
     await JwtStrategy.invalidateTokenStrategy(decoded.user_id);
-    logger.info(`Logout successful for user ${decoded.user_id}`);
+    // Solo se mantiene log de error/warn relevante para producción
     return true;
   }
 
@@ -56,8 +55,12 @@ class AuthService {
       throw new Error("INVALID TOKEN");
     }
 
-    logger.info(`Token verified successfully for user:${decoded.user_id}`);
-    return { user_id: decoded.user_id, role: decoded.role };
+    const user = await User.findById(decoded.user_id).populate("companies", "-__v");
+    if (!user) throw new Error("USER NOT FOUND");
+
+    const { password: _, ...userWithoutPassword } = user.toObject();
+
+    return userWithoutPassword;
   }
 }
 

@@ -1,5 +1,3 @@
-module.exports = { handleError };
-
 function handleError(res, err) {
   const ERROR_MAP = {
     // Auth errors

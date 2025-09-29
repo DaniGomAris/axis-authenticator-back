@@ -8,7 +8,11 @@ const JWT_ACCESS_EXPIRES = parseInt(process.env.JWT_ACCESS_EXPIRES);
 class JwtStrategy {
   // Generate token and store in Redis
   static async generateTokenStrategy(user_id, role) {
-    const token = jwt.sign({ user_id, role }, JWT_SECRET, {
+    const token = jwt.sign(
+      { 
+        user_id, 
+        role 
+      }, JWT_SECRET, {
       expiresIn: JWT_ACCESS_EXPIRES,
       algorithm: "HS256", // HMAC SHA256
     });
@@ -21,7 +25,6 @@ class JwtStrategy {
     // Store the new token in Redis with a TTL
     await redisClient.setEx(redisKey, JWT_ACCESS_EXPIRES, token);
 
-    logger.info(`JWT generated for user ${user_id}`);
     return token;
   }
 
@@ -39,7 +42,6 @@ class JwtStrategy {
 
       return { user_id: decoded.user_id, role: decoded.role, exp: decoded.exp };
     } catch (err) {
-      logger.warn("JWT verification failed");
 
       // Token is invalid or expired
       return null;
@@ -52,7 +54,6 @@ class JwtStrategy {
 
     // Remove any existing token for this user
     await redisClient.del(redisKey);
-    logger.info(`JWT invalidated for user ${user_id}`);
   }
 }
 

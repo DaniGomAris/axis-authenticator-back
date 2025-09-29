@@ -1,5 +1,4 @@
 const AuthService = require("@modules/auth/auth-service");
-const logger = require("@utils/logger");
 const { handleError } = require("@handlers/error-handler");
 
 class AuthController {
@@ -17,7 +16,6 @@ class AuthController {
         user,
         token
       });
-      logger.info("Login exitoso");
     } catch (err) {
       handleError(res, err);
     }
@@ -39,7 +37,6 @@ class AuthController {
         status: "ok",
         message: "Logout exitoso"
       });
-      logger.info("Logout exitoso");
     } catch (err) {
       handleError(res, err);
     }
