@@ -16,4 +16,12 @@ router.post("/logout", validToken, AuthController.logoutUserController);
 // GET / auth/verify-token
 router.get("/verify-token", AuthController.verifyTokenController);
 
+// Get user info
+// GET / auth/user-info/:userId
+router.get("/user-info/:userId", validToken, AuthController.getUserInfoController);
+
+// Change password
+// POST / auth/change-password/:userId
+router.post("/change-password/:userId", validToken, AuthController.changePasswordController);
+
 module.exports = router;
