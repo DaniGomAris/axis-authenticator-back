@@ -62,38 +62,6 @@ class AuthController {
       handleError(res, err, 401);
     }
   }
-
-  // Get user info (full name + role)
-  static async getUserInfoController(req, res) {
-    try {
-      const { userId } = req.params; // o desde token si prefieres
-      const userInfo = await AuthService.getUserInfoService(userId);
-
-      res.status(200).json({
-        success: true,
-        user: userInfo
-      });
-    } catch (err) {
-      handleError(res, err);
-    }
-  }
-
-  static async changePasswordController(req, res) {
-    try {
-      const { userId } = req.params;
-      const { password, rePassword } = req.body;
-
-      await AuthService.changeUserPasswordService(userId, password, rePassword);
-
-      res.status(200).json({
-        success: true,
-        message: "Contraseña actualizada correctamente"
-      });
-    } catch (err) {
-      handleError(res, err);
-    }
-  }
-
 }
 
 module.exports = AuthController;

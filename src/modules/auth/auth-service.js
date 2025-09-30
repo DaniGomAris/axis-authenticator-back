@@ -2,7 +2,6 @@ const User = require("@modules/auth/models/user-model");
 const JwtStrategy = require("@modules/auth/strategies/jwt-strategy");
 const logger = require("@utils/logger");
 const { validateLogin, validatePassword, validateRole } = require("@modules/auth/validators/auth-validator");
-const argon2 = require("argon2");
 
 class AuthService {
 
@@ -39,10 +38,11 @@ class AuthService {
     }
 
     await JwtStrategy.invalidateTokenStrategy(decoded.user_id);
+    // Solo se mantiene log de error/warn relevante para producción
     return true;
   }
 
-  // Verify token
+  // Verify a token is valid
   static async verifyUserTokenService(token) {
     if (!token) {
       logger.warn("Token verification failed: no token provided");
@@ -59,38 +59,8 @@ class AuthService {
     if (!user) throw new Error("USER NOT FOUND");
 
     const { password: _, ...userWithoutPassword } = user.toObject();
+
     return userWithoutPassword;
-  }
-
-  // Get user data
-  static async getUserInfoService(userId) {
-    const user = await User.findById(userId);
-    if (!user) throw new Error("USER NOT FOUND");
-
-    return {
-      fullName: `${user.name} ${user.last_name1} ${user.last_name2 || ""}`.trim(),
-      role: user.role
-    };
-  }
-
-  // Change password
-  static async changeUserPasswordService(userId, password, rePassword) {
-    if (!password || !rePassword) {
-      throw new Error("PASSWORD AND RE-PASSWORD REQUIRED");
-    }
-
-    if (password !== rePassword) {
-      throw new Error("PASSWORDS DO NOT MATCH");
-    }
-
-    const user = await User.findById(userId);
-    if (!user) throw new Error("USER NOT FOUND");
-
-    const hashedPassword = await argon2.hash(password);
-    user.password = hashedPassword;
-    await user.save();
-
-    return true;
   }
 }
 
