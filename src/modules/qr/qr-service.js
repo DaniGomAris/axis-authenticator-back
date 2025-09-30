@@ -2,7 +2,6 @@ const QrStrategy = require("@modules/qr/strategies/qr-strategy");
 const logger = require("@utils/logger");
 
 class QrService {
-
   // Generate QR
   static async generateQrService(user_id, company_id = null) {
     try {
@@ -10,6 +9,10 @@ class QrService {
       logger.info(`GUID generated | user_id: ${user_id} | company_id: ${company_id}`);
       return { lGUID };
     } catch (error) {
+      if (error.message === "QR ALREADY ACTIVE") {
+        logger.warn(`User tried to generate multiple QR | user_id: ${user_id}`);
+        throw new Error("QR ALREADY ACTIVE. Please wait until it expires.");
+      }
       logger.error(`Error generating GUID | user_id: ${user_id}`, { error });
       throw new Error("QR GENERATION FAILED");
     }

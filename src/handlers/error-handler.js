@@ -20,6 +20,7 @@ function handleError(res, err) {
     "QR GENERATION FAILED": { msg: "Failed to generate QR", status: 404 },
     "QR NOT FOUND": { msg: "QR not found or expired", status: 404 },
     "QR VALIDATION FAILED": { msg: "Failed to validate QR", status: 404 },
+    "QR ALREADY ACTIVE": { msg: "QR already active, please wait until it expires", status: 409 },
 
     // Twilio
     "OTP SEND FAILED": { msg: "Failed to send OTP", status: 500 },

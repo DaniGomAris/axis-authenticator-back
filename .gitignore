@@ -60,8 +60,5 @@ Thumbs.db
 # Moduels
 node_modules
 
-# Notes
-notes.txt
-
 #json
 package-lock.json
