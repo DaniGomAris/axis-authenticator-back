@@ -7,26 +7,41 @@ const QR_ID_LENGTH = parseInt(process.env.QR_ID_LENGTH);
 class QrStrategy {
   // Generate temporary Qr ID
   static async generateTemporaryQrId(user_id, company_id) {
-    // Validate qr is active for user
-    const existingQr = await redisClient.get(`user:${user_id}:qr`);
+    // Validate if user have active qr
+    const existingQr = await redisClient.get(`qr:${user_id}`);
     if (existingQr) {
       throw new Error("QR ALREADY ACTIVE");
     }
 
+    // Generate LGUID
     const lGUID = uuidv4().replace(/-/g, "").slice(0, QR_ID_LENGTH);
-    const value = JSON.stringify({ user_id, company_id });
 
-    // Save Qr with TTL
-    await redisClient.setEx(lGUID, QR_TEMPORARY_EXPIRES, value);
+    // Save in Redis with TTL
+    await redisClient.setEx(
+      `qr:${user_id}`,
+      QR_TEMPORARY_EXPIRES,
+      JSON.stringify({ lGUID, user_id, company_id })
+    );
 
     return lGUID;
   }
 
   // Validate temporary Qr ID
   static async validateTemporaryQrId(lGUID) {
-    const record = await redisClient.get(lGUID);
-    if (!record) return null;
-    return JSON.parse(record);
+    // Find in all active keys
+    const keys = await redisClient.keys("qr:*");
+
+    for (const key of keys) {
+      const record = await redisClient.get(key);
+      if (record) {
+        const parsed = JSON.parse(record);
+        if (parsed.lGUID === lGUID) {
+          return parsed;
+        }
+      }
+    }
+
+    return null; // Expired or not found
   }
 }
 
