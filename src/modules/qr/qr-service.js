@@ -11,7 +11,7 @@ class QrService {
     } catch (error) {
       if (error.message === "QR ALREADY ACTIVE") {
         logger.warn(`User tried to generate multiple QR | user_id: ${user_id}`);
-        throw new Error("QR ALREADY ACTIVE. Please wait until it expires.");
+        throw new Error("QR ALREADY ACTIVE");
       }
       logger.error(`Error generating GUID | user_id: ${user_id}`, { error });
       throw new Error("QR GENERATION FAILED");
