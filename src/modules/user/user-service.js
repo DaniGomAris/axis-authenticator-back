@@ -1,6 +1,7 @@
 const User = require("@modules/auth/models/user-model");
 const argon2 = require("argon2");
 const redisClient = require("@config/redis-config");
+const { validateUser } = require("@modules/user/validators/user-validator");
 
 const TWILIO_VERIFIED_PREFIX = "otp-verified:";
 
@@ -26,6 +27,8 @@ class UserService {
     if (password !== rePassword) {
       throw new Error("PASSWORDS DO NOT MATCH");
     }
+
+    validateUser({ password });
 
     // Check OTP verification
     const verified = await redisClient.get(`${TWILIO_VERIFIED_PREFIX}${phone}`);

@@ -33,6 +33,9 @@ function handleError(res, err) {
     "OTP REQUIRED": { msg: "Se requiere OTP", status: 400 },
     "OTP EXPIRED": { msg: "OTP expirado o inválido", status: 400 },
     "OTP INCORRECT": { msg: "OTP incorrecto", status: 400 },
+
+    // User
+    "WRONG PASSWORD FORMAT": { msg: "Formato incorrecto 1may, 1min, car especial, 1num ", status: 401 },
   };
 
   const { msg, status } =
